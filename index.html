@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yahya Chatrioui — Data Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --snow: #29d3b5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: all 0.18s ease;
+    opacity: 0.5;
+  }
+
+  /* Grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    top: 10%; left: -100px;
+    pointer-events: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%);
+    bottom: 10%; right: 5%;
+    pointer-events: none;
+    animation: pulse 8s ease-in-out infinite reverse;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1) translate(0,0); opacity:1; }
+    50% { transform: scale(1.1) translate(20px,-20px); opacity:0.7; }
+  }
+
+  .hero-content { position: relative; max-width: 900px; }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--snow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.8;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.25s;
+    cursor: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 400;
+  }
+  .btn-primary:hover {
+    background: var(--snow);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,212,255,0.25);
+  }
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    margin-top: 4rem;
+    display: flex;
+    gap: 3rem;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 3rem;
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 60px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .skill-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-card:hover { transform: translateY(-2px); }
+
+  .skill-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+  }
+  .skill-level {
+    margin-top: 0.8rem;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-level-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--snow));
+    border-radius: 2px;
+    animation: grow 1.2s ease both;
+  }
+  @keyframes grow { from { width: 0 !important; } }
+
+  /* EXPERIENCE TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+  }
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 0.4rem;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .timeline-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .timeline-company {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .timeline-period {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+  .timeline-role {
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  .timeline-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 620px;
+  }
+  .timeline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+  .tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    background: rgba(0,212,255,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.15);
+  }
+
+  /* CERTS */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.25s;
+  }
+  .cert-card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .cert-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .cert-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .cert-issuer {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .contact-item {
+    background: var(--surface);
+    padding: 1.8rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .contact-item:hover {
+    background: rgba(0,212,255,0.05);
+  }
+  .contact-type {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .contact-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 0 3rem;
+    width: calc(100% - 6rem);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero-stats { gap: 2rem; }
+    .divider { margin: 0 1.5rem; width: calc(100% - 3rem); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">YC</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Stack</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <span class="hero-tag">Available for freelance · Amsterdam</span>
+    <h1>
+      Yahya<br>
+      <span class="line2">Chatrioui</span>
+    </h1>
+    <p class="hero-sub">
+      Freelance Data Engineer & BI Consultant. I turn raw data into reliable, scalable pipelines — cloud-native, on-prem, and everything in between.
+    </p>
+    <div class="hero-cta">
+      <a href="#experience" class="btn btn-primary">View My Work ↓</a>
+      <a href="mailto:Y.Chatrioui@outlook.com" class="btn btn-ghost">Get in Touch</a>
+      <a href="https://www.linkedin.com/in/yahya-c/" target="_blank" class="btn btn-ghost">LinkedIn ↗</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div>
+        <div class="stat-num">8+</div>
+        <div class="stat-label">Companies Served</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Sectors</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">// Profile</div>
+  <h2>Who I Am</h2>
+  <p style="max-width:680px; color:var(--muted); line-height:1.9; font-size:0.85rem;">
+    Agile-minded data engineer with a passion for building robust data platforms. With over 5 years of hands-on experience across automotive, energy, flower auctions, music rights and retail — I don't just build pipelines, I build trust in data. I'm tool-agnostic: Snowflake, dbt, Matillion, Azure, SAP — I pick whatever best serves the problem. Colleagues describe me as structured, reliable, and a strong communicator who bridges the gap between engineering and business.
+  </p>
+  <p style="max-width:680px; color:var(--muted); line-height:1.9; font-size:0.85rem; margin-top:1.2rem;">
+    Currently operating as <strong style="color:var(--text)">JuMay Data Solutions</strong> — open for Data Engineering and BI assignments.
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">// Stack</div>
+  <h2>Tech I Work With</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <span class="skill-icon">❄️</span>
+      <span class="skill-name">Snowflake</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:95%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🔷</span>
+      <span class="skill-name">dbt</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:95%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">⚡</span>
+      <span class="skill-name">SQL</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:97%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🔵</span>
+      <span class="skill-name">Azure</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">⚙️</span>
+      <span class="skill-name">Matillion</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:88%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🌿</span>
+      <span class="skill-name">Git</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🔄</span>
+      <span class="skill-name">CI/CD</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:80%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🌊</span>
+      <span class="skill-name">Airflow</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:72%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🗃️</span>
+      <span class="skill-name">SAP BODS/HANA</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:78%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">📊</span>
+      <span class="skill-name">Power BI</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:82%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🧱</span>
+      <span class="skill-name">Databricks</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:70%"></div></div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🔗</span>
+      <span class="skill-name">Data Mesh</span>
+      <div class="skill-level"><div class="skill-level-fill" style="width:80%"></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">// Experience</div>
+  <h2>Where I've Worked</h2>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">Alliander (via JuMay)</span>
+        <span class="timeline-period">Nov 2024 – Oct 2025</span>
+      </div>
+      <div class="timeline-role">Data Engineer — Reporting House Qirion</div>
+      <p class="timeline-desc">Led migration from SAP HANA to Snowflake & Matillion. Designed data products under Data Mesh principles, built layered information architecture, integrated EPM, Workday, SAP ECC, SAP C4C and custom Alliander applications. Coached and onboarded the engineering team.</p>
+      <div class="timeline-tags">
+        <span class="tag">Snowflake</span>
+        <span class="tag">Matillion</span>
+        <span class="tag">SAP HANA</span>
+        <span class="tag">Data Mesh</span>
+        <span class="tag">GitHub</span>
+        <span class="tag">Atlan</span>
+        <span class="tag">ServiceNow</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">Malmberg (via JuMay)</span>
+        <span class="timeline-period">Sep 2024 – Nov 2024</span>
+      </div>
+      <div class="timeline-role">DBT Tech Lead</div>
+      <p class="timeline-desc">Led migration from stored procedures to dbt Cloud. Designed information layers and CI/CD pipelines, applied dbt best practices for modularity, testing, and documentation. Actively trained and mentored the analytics team to full dbt maturity.</p>
+      <div class="timeline-tags">
+        <span class="tag">dbt Cloud</span>
+        <span class="tag">Snowflake</span>
+        <span class="tag">CI/CD</span>
+        <span class="tag">AWS</span>
+        <span class="tag">GitHub</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">BumaStemra (via HotITem)</span>
+        <span class="timeline-period">Feb 2024 – Sep 2024</span>
+      </div>
+      <div class="timeline-role">Data Engineer / DBT Tech Lead</div>
+      <p class="timeline-desc">Deployed dbt on Ubuntu server, built multi-layer transformation workflows, integrated CI/CD in Azure DevOps for automated testing and versioning. Initiated Apache Airflow setup for orchestration. Unlocked financial data from NetSuite.</p>
+      <div class="timeline-tags">
+        <span class="tag">dbt</span>
+        <span class="tag">Snowflake</span>
+        <span class="tag">Azure DevOps</span>
+        <span class="tag">Airflow</span>
+        <span class="tag">NetSuite</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">Royal FloraHolland (via HotITem)</span>
+        <span class="timeline-period">Jun 2023 – Mar 2024</span>
+      </div>
+      <div class="timeline-role">Data Engineer Consultant</div>
+      <p class="timeline-desc">Built NRT data pipelines from Kafka via Matillion & Databricks into Snowflake using medallion architecture. Created a STAR model and Floriday BSG model. Developed a Tabular model for Power BI with Row Level Security and automated daily validation via Azure Functions.</p>
+      <div class="timeline-tags">
+        <span class="tag">Snowflake</span>
+        <span class="tag">Matillion</span>
+        <span class="tag">Kafka</span>
+        <span class="tag">Databricks</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">SAP BODS</span>
+        <span class="tag">Azure Functions</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">Athlon International (via Axians)</span>
+        <span class="timeline-period">Jul 2021 – Mar 2023</span>
+      </div>
+      <div class="timeline-role">Data Engineer</div>
+      <p class="timeline-desc">Built an international data warehouse as single source of truth, maintained the Dutch DWH, and co-introduced a modern workflow using conda, dbt, Git, and Snowflake.</p>
+      <div class="timeline-tags">
+        <span class="tag">dbt</span>
+        <span class="tag">Snowflake</span>
+        <span class="tag">Git</span>
+        <span class="tag">Data Warehouse</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-meta">
+        <span class="timeline-company">Detailresult Group</span>
+        <span class="timeline-period">Jul 2019 – Oct 2020</span>
+      </div>
+      <div class="timeline-role">Information Manager FSSC</div>
+      <p class="timeline-desc">Managed financial applications and BI tools, built and maintained financial data warehouse, framework model and cubes. Defined and implemented automated controls, represented finance in cross-disciplinary projects.</p>
+      <div class="timeline-tags">
+        <span class="tag">BI Reporting</span>
+        <span class="tag">DWH</span>
+        <span class="tag">Finance</span>
+        <span class="tag">SSAS</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CERTS -->
+<section id="certs">
+  <div class="section-label">// Credentials</div>
+  <h2>Certifications</h2>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <span class="cert-icon">🔵</span>
+      <div>
+        <div class="cert-name">Microsoft Azure DP-203</div>
+        <div class="cert-issuer">Microsoft — Data Engineering on Azure</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">❄️</span>
+      <div>
+        <div class="cert-name">Snowflake Hands-On Essentials</div>
+        <div class="cert-issuer">Data Warehouse</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">❄️</span>
+      <div>
+        <div class="cert-name">Snowflake Hands-On Essentials</div>
+        <div class="cert-issuer">Data Lake</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">🔷</span>
+      <div>
+        <div class="cert-name">dbt Fundamentals</div>
+        <div class="cert-issuer">dbt Labs</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">⚡</span>
+      <div>
+        <div class="cert-name">Lean Six Sigma</div>
+        <div class="cert-issuer">Process Improvement</div>
+      </div>
+    </div>
+    <div class="cert-card" style="background:rgba(0,212,255,0.04); border-color:rgba(0,212,255,0.2)">
+      <span class="cert-icon">🎓</span>
+      <div>
+        <div class="cert-name">Bachelor ICT — Business IT & Management</div>
+        <div class="cert-issuer">Hogeschool InHolland · 2019</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">// Contact</div>
+  <h2>Let's Work Together</h2>
+  <p style="color:var(--muted); font-size:0.82rem; max-width:500px; line-height:1.8; margin-bottom:2rem;">
+    Available for freelance Data Engineering and BI projects via JuMay Data Solutions. Based in Amsterdam, open to remote and on-site.
+  </p>
+  <div class="contact-grid">
+    <a href="mailto:Y.Chatrioui@outlook.com" class="contact-item">
+      <span class="contact-type">Email</span>
+      <span class="contact-value">Y.Chatrioui@outlook.com</span>
+    </a>
+    <a href="tel:+31648374646" class="contact-item">
+      <span class="contact-type">Phone</span>
+      <span class="contact-value">+31 6 48 37 46 46</span>
+    </a>
+    <a href="https://www.linkedin.com/in/yahya-c/" target="_blank" class="contact-item">
+      <span class="contact-type">LinkedIn</span>
+      <span class="contact-value">linkedin.com/in/yahya-c ↗</span>
+    </a>
+    <div class="contact-item">
+      <span class="contact-type">KVK</span>
+      <span class="contact-value">93325509</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Yahya Chatrioui · JuMay Data Solutions · Amsterdam
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Timeline scroll reveal
+  const items = document.querySelectorAll('.timeline-item');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
